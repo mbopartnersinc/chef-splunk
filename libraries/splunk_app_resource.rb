@@ -30,6 +30,7 @@ class Chef
       attribute :app_name, kind_of: String, name_attribute: true
       attribute :remote_file, kind_of: String, default: nil
       attribute :cookbook_file, kind_of: String, default: nil
+      attribute :template_cookbook, kind_of: String, required: false
       attribute :cookbook, kind_of: String, default: nil
       attribute :checksum, kind_of: String, default: nil
       attribute :remote_directory, kind_of: String, default: nil

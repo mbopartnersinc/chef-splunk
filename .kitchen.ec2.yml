@@ -1,0 +1,42 @@
+driver:
+  name: ec2
+  aws_ssh_key_id: <%= ENV['AWS_SSH_KEY'] %>
+  security_group_ids:  <%= ENV['AWS_SECURITY_GROUPS'] %>
+  region: <%= ENV['AWS_REGION'] %>
+  availability_zone: <%= ENV['AWS_AVAILABILITY_ZONE'] %>
+  require_chef_omnibus: true
+  subnet_id: <%= ENV['AWS_SUBNET'] %>
+  instance_type: <%= ENV['LINUX_INSTANCE_SIZE'] %>
+  associate_public_ip: false
+  interface: private
+  user_data: <%= ENV['USER_DATA_PATH'] %>
+  tags:
+    OWNER: <%= ENV['AWS_OWNER_TAG'] %>
+    Name: <%= ENV['AWS_NAME_TAG'] %>
+
+provisioner:
+  name: chef_zero
+  data_bags_path: "test/fixtures/data_bags"
+
+transport:
+  username: <%= ENV['AWS_USERNAME'] %>
+  ssh_key: ~/.ssh/<%= ENV['AWS_SSH_KEY'] %>.pem
+
+platforms:
+  - name: centos-7.2
+    driver:
+      image_id: <%= ENV['AWS_CENTOS7_AMI_ID'] %>
+      instance_type: t2.small
+      user_data: <%= ENV['LINUX_USER_DATA_PATH'] %>
+    transport:
+      username: <%= ENV['AWS_CENTOS7_USERNAME'] %>
+
+suites:
+  - name: client
+    run_list:
+      - recipe[chef-splunk::default]
+      - recipe[test::default]
+    attributes:
+      dev_mode: true
+      splunk:
+        accept_license: true

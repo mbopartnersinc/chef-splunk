@@ -1,6 +1,6 @@
 #
 # Author: Joshua Timberman <joshua@chef.io>
-# Copyright:: 2014-2016, Chef Software, Inc <legal@chef.io>
+# Copyright (c) 2014, Chef Software, Inc <legal@chef.io>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ include Chef::Mixin::ShellOut
 class Chef
   class Provider
     class SplunkApp < Chef::Provider::LWRPBase
-      provides :splunk_app
+      provides :splunk_app if respond_to?(:provides)
 
       use_inline_resources
 
@@ -35,65 +35,16 @@ class Chef
       action :install do
         splunk_service
         install_dependencies unless new_resource.app_dependencies.empty?
-        unless app_installed?
-          if new_resource.cookbook_file
-            app_package = local_file(new_resource.cookbook_file)
-            cookbook_file app_package do
-              source new_resource.cookbook_file
-              cookbook new_resource.cookbook
-              checksum new_resource.checksum
-              notifies :run, "execute[splunk-install-#{new_resource.app_name}]", :immediately
-            end
-          elsif new_resource.remote_file
-            app_package = local_file(new_resource.remote_file)
-            remote_file app_package do
-              source new_resource.remote_file
-              checksum new_resource.checksum
-              notifies :run, "execute[splunk-install-#{new_resource.app_name}]", :immediately
-            end
-          elsif new_resource.remote_directory
-            app_package = app_dir
-            remote_directory app_dir do
-              source new_resource.remote_directory
-              cookbook new_resource.cookbook
-              notifies :restart, 'service[splunk]', :immediately
-            end
-          else
-            raise "Could not find an installation source for splunk_app[#{new_resource.app_name}]"
-          end
-
-          dir = app_dir
-
-          execute "splunk-install-#{new_resource.app_name}" do
-            command "#{splunk_cmd} install app #{app_package} -auth #{splunk_auth(new_resource.splunk_auth)}"
-            not_if { ::File.exist?("#{dir}/default/app.conf") }
-          end
-        end
-
-        directory "#{app_dir}/local" do
-          recursive true
-          mode '755'
-          owner node['splunk']['user']['username'] unless node['splunk']['server']['runasroot']
-        end
-
-        if new_resource.templates
-          new_resource.templates.each do |t|
-            template "#{app_dir}/local/#{t}" do
-              source "#{new_resource.app_name}/#{t}.erb"
-              mode '644'
-              notifies :restart, 'service[splunk]'
-            end
-          end
+        if app_installed?
+          Chef::Log.info('Splunk app is already installed')
+        else
+          install_splunk_app
         end
       end
 
       action :remove do
         splunk_service
-        directory app_dir do
-          action :delete
-          recursive true
-          notifies :restart, 'service[splunk]'
-        end
+        remove_splunk_app
       end
 
       action :enable do
@@ -139,6 +90,59 @@ class Chef
 
       def app_installed?
         ::File.exist?("#{app_dir}/default/app.conf")
+      end
+
+      def remove_splunk_app
+        directory app_dir do
+          action :delete
+          recursive true
+          notifies :restart, 'service[splunk]'
+        end
+      end
+
+      def install_splunk_app
+        if new_resource.cookbook_file
+          app_package = local_file(new_resource.cookbook_file)
+          cookbook_file app_package do
+            source new_resource.cookbook_file
+            cookbook new_resource.cookbook
+            checksum new_resource.checksum
+          end
+          execute "splunk-install-#{new_resource.app_name}" do
+            command "#{splunk_cmd} install app #{app_package} -auth #{splunk_auth(new_resource.splunk_auth)}"
+          end
+        elsif new_resource.remote_file
+          app_package = local_file(new_resource.remote_file)
+          remote_file app_package do
+            source new_resource.remote_file
+            checksum new_resource.checksum
+          end
+          execute "splunk-install-#{new_resource.app_name}" do
+            command "#{splunk_cmd} install app #{app_package} -auth #{splunk_auth(new_resource.splunk_auth)}"
+          end
+        elsif new_resource.remote_directory
+          remote_directory app_dir do
+            source new_resource.remote_directory
+            cookbook new_resource.cookbook
+            notifies :restart, 'service[splunk]', :delayed
+          end
+        elsif new_resource.templates
+          new_resource.templates.each do |t|
+            directory "#{app_dir}/local/" do
+              recursive true
+              mode 00755
+              owner node['splunk']['user']['username'] unless node['splunk']['server']['runasroot']
+            end
+            template "#{app_dir}/local/#{t}" do
+              source "#{new_resource.app_name}/#{t}.erb"
+              cookbook new_resource.template_cookbook if new_resource.template_cookbook
+              mode 00644
+              notifies :restart, 'service[splunk]', :delayed
+            end
+          end
+        else
+          fail("Could not find an installation source for splunk_app[#{new_resource.app_name}]")
+        end
       end
 
       def splunk_service

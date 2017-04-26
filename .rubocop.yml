@@ -1,5 +1,56 @@
-# rubocop todo
+# inherit_from: .rubocop_todo.yml
+# Stylistic choices of this cookbook.
 
-Style/RegexpLiteral:
+AllCops:
   Exclude:
-    - 'test/integration/client-inputs-outputs/serverspec/client_spec.rb'
+    - 'test/**/*'
+    - 'spec/**/*' # ignore spec tests for now
+    - 'vendor/**/*' # ignore non-local files
+    - Guardfile
+
+# We like longer lines
+Metrics/LineLength:
+  Max: 160
+
+# TODO: add encoding headers
+Style/Encoding:
+  Enabled: false
+
+# Our code has names with dashes.
+Style/FileName:
+  Enabled: false
+
+# We still have HashRockets in a lot of places, ignore them.
+Style/HashSyntax:
+  Enabled: false
+
+# Increase readability of large numbers after 5 digits (ports) only.
+Style/NumericLiterals:
+  MinDigits: 6
+
+# TODO: see if this should be replaced by Chef::Application.fatal!
+Style/SignalException:
+  Enabled: false
+
+# We enjoy parameters lining up for visual comprehension
+Style/SpaceBeforeFirstArg:
+  Enabled: false
+
+# Only enforce a wordlist for 5 or longer lists.
+Style/WordArray:
+  MinSize: 5
+
+# Specifically for this chef-splunk
+ClassLength:
+  Enabled: false
+Documentation:
+  Enabled: false
+CyclomaticComplexity:
+  Enabled: false
+PerceivedComplexity:
+  Enabled: false
+MethodLength:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+

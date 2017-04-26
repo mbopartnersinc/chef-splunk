@@ -20,8 +20,8 @@ splunk_app 'sanitycheck' do
 end
 
 splunk_app 'bistro-remote-file' do
-  app_name 'bistro-1.0.2'
-  remote_file 'https://github.com/ampledata/bistro/archive/1.0.2.tar.gz'
+  app_name 'bistro-1.0.3'
+  remote_file 'https://github.com/ampledata/bistro/archive/1.0.3.tar.gz'
   splunk_auth 'admin:notarealpassword'
   templates ['inputs.conf']
   app_dependencies(
@@ -32,4 +32,10 @@ splunk_app 'bistro-remote-file' do
     end
   )
   action :install
+end
+
+splunk_app 'generallogs_inputs' do
+  templates ['inputs.conf']
+  action :install
+  splunk_auth 'admin:notarealpassword'
 end

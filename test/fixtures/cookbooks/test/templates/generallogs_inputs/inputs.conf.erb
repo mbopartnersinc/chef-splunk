@@ -1,0 +1,7 @@
+[monitor:///var/log/nothinghere]
+index = kitchen
+disabled = false
+sourcetype = syslog
+whitelist = (\.log|log$|messages|secure|auth|mesg$|cron$|acpid$|\.out)
+blacklist = (\.\d{1,2}|lastlog|\/nginx\/|\/rabbitmq\/|\/uwsgi\/|\/httpd\/|\/chef\/|\/haproxy\/|\/opscode\/|\/chef-manage\/|\/mongod\/)
+

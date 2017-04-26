@@ -13,7 +13,7 @@ describe 'inputs config should be configured per node attributes' do
   describe file('/opt/splunkforwarder/etc/system/local/inputs.conf') do
     it { should be_file }
     its(:content) { should match(/\[default\]/) }
-    its(:content) { should match(/host = client-centos-72/) }
+    its(:content) { should match(/host = /) }
   end
 end
 

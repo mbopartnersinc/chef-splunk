@@ -24,7 +24,7 @@ describe 'chef-splunk::setup_clustering' do
 
   context 'default server settings' do
     let(:chef_run) do
-      ChefSpec::ServerRunner.new do |node, server|
+      ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511') do |node, server|
         node.normal['splunk']['is_server'] = true
         # Populate mock vault data bag to the server
         server.create_data_bag('vault', secrets)
@@ -38,7 +38,7 @@ describe 'chef-splunk::setup_clustering' do
 
   context 'invalid cluster mode settings' do
     let(:chef_run) do
-      ChefSpec::ServerRunner.new do |node, server|
+      ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511') do |node, server|
         node.normal['dev_mode'] = true
         node.normal['splunk']['is_server'] = true
         node.normal['splunk']['clustering']['enabled'] = true
@@ -60,7 +60,7 @@ describe 'chef-splunk::setup_clustering' do
 
   context 'indexer cluster master settings' do
     let(:chef_run) do
-      ChefSpec::ServerRunner.new do |node, server|
+      ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511') do |node, server|
         node.normal['dev_mode'] = true
         node.normal['splunk']['is_server'] = true
         node.normal['splunk']['clustering']['enabled'] = true
@@ -89,7 +89,7 @@ describe 'chef-splunk::setup_clustering' do
 
   context 'indexer cluster master with custom settings' do
     let(:chef_run) do
-      ChefSpec::ServerRunner.new do |node, server|
+      ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511') do |node, server|
         node.normal['dev_mode'] = true
         node.normal['splunk']['is_server'] = true
         node.normal['splunk']['clustering']['enabled'] = true
@@ -120,7 +120,7 @@ describe 'chef-splunk::setup_clustering' do
 
   context 'indexer cluster search head settings' do
     let(:chef_run) do
-      ChefSpec::ServerRunner.new do |node, server|
+      ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511') do |node, server|
         node.normal['dev_mode'] = true
         node.normal['splunk']['is_server'] = true
         node.normal['splunk']['clustering']['enabled'] = true

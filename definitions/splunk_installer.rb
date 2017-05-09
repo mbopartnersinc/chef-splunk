@@ -8,7 +8,7 @@ define :splunk_installer, url: nil do # ~FC015
     action :create_if_missing
   end
 
-  if %w( omnios ).include?(node['platform'])
+  if %w(omnios).include?(node['platform'])
     pkgopts = [
       "-a #{cache_dir}/#{params[:name]}-nocheck",
       "-r #{cache_dir}/splunk-response"

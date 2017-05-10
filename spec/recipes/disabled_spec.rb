@@ -3,7 +3,7 @@ require_relative '../spec_helper'
 describe 'chef-splunk::disabled' do
   context 'splunk is disabled' do
     let(:chef_run) do
-      ChefSpec::ServerRunner.new do |node|
+      ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511') do |node|
         node.normal['splunk']['disabled'] = true
       end.converge(described_recipe)
     end

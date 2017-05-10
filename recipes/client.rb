@@ -23,11 +23,13 @@
 include_recipe 'chef-splunk::user'
 include_recipe 'chef-splunk::install_forwarder'
 
-splunk_servers = search( # ~FC003
-  :node,
-  "splunk_is_server:true AND chef_environment:#{node.chef_environment}"
-).sort! do |a, b|
-  a.name <=> b.name
+if node['splunk']['indexers_group1']['splunk_servers'].empty?
+  node.default['splunk']['indexers_group1']['splunk_servers'] = search( # ~FC003
+    :node,
+    "splunk_is_server:true AND chef_environment:#{node.chef_environment}"
+  ).sort! do |a, b|
+    a.name <=> b.name
+  end
 end
 
 # ensure that the splunk service resource is available without cloning
@@ -47,8 +49,12 @@ end
 
 template "#{splunk_dir}/etc/system/local/outputs.conf" do
   source 'outputs.conf.erb'
-  mode '644'
-  variables splunk_servers: splunk_servers, outputs_conf: node['splunk']['outputs_conf']
+  mode 0644
+  variables(
+    indexers_group1_name: node['splunk']['indexers_group1']['name'],
+    indexers_group1_splunk_servers: node['splunk']['indexers_group1']['splunk_servers'],
+    indexers_group1_outputs_conf: node['splunk']['indexers_group1']['outputs_conf']
+  )
   notifies :restart, 'service[splunk]'
 end
 

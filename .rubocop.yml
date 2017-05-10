@@ -53,4 +53,10 @@ MethodLength:
   Enabled: false
 Metrics/AbcSize:
   Enabled: false
+Style/NumericLiteralPrefix:
+  Enabled: false
+Style/MultilineIfModifier:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
 

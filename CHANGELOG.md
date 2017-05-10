@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the splunk cookbook.
 
+2.0.1
+-----
+nmcginnis - Updated gems to work with latest Chef DK version.  Added conditional around node search in client recipe and thus removed requirement for including node search stub in role cookbooks.
+
 2.0.0
 -----
 nmcginnis - *Diverging slightly from the community here*. Updated provider to allow for deploying inputs as splunk apps.

@@ -50,7 +50,9 @@ default['splunk']['clustering'] = {
 
 # Add key value pairs to this to add configuration pairs to the output.conf file
 # 'sslCertPath' => '$SPLUNK_HOME/etc/certs/cert.pem'
-default['splunk']['outputs_conf'] = {
+default['splunk']['indexers_group1']['name'] = 'group1'
+default['splunk']['indexers_group1']['splunk_servers'] = []
+default['splunk']['indexers_group1']['outputs_conf'] = {
   'forwardedindex.0.whitelist' => '.*',
   'forwardedindex.1.blacklist' => '_.*',
   'forwardedindex.2.whitelist' => '_audit',

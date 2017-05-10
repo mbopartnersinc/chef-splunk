@@ -15,7 +15,7 @@ describe 'chef-splunk::setup_ssl' do
 
   context 'default attribute settings' do
     let(:chef_run) do
-      ChefSpec::ServerRunner.new do |node, server|
+      ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511') do |node, server|
         node.normal['splunk']['ssl_options']['enable_ssl'] = true
         node.normal['splunk']['is_server'] = true
         node.normal['dev_mode'] = true
@@ -47,7 +47,7 @@ describe 'chef-splunk::setup_ssl' do
 
   context 'alternative webui port' do
     let(:chef_run) do
-      ChefSpec::ServerRunner.new do |node, server|
+      ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511') do |node, server|
         node.normal['splunk']['ssl_options']['enable_ssl'] = true
         node.normal['splunk']['is_server'] = true
         node.normal['dev_mode'] = true

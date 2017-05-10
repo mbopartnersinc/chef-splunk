@@ -2,7 +2,7 @@ require_relative '../spec_helper'
 
 describe 'chef-splunk::service' do
   let(:chef_run) do
-    ChefSpec::ServerRunner.new do |node|
+    ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511') do |node|
       node.normal['splunk']['accept_license'] = true
     end.converge(described_recipe)
   end

@@ -33,7 +33,7 @@ class Chef
       end
 
       action :install do
-        splunk_service
+        # splunk_service
         install_dependencies unless new_resource.app_dependencies.empty?
         if app_installed?
           Chef::Log.info('Splunk app is already installed')
@@ -43,13 +43,13 @@ class Chef
       end
 
       action :remove do
-        splunk_service
+        # splunk_service
         remove_splunk_app
       end
 
       action :enable do
         unless app_enabled? # ~FC023
-          splunk_service
+          # splunk_service
           execute "splunk-enable-#{new_resource.app_name}" do
             command "#{splunk_cmd} enable app #{new_resource.app_name} -auth #{splunk_auth(new_resource.splunk_auth)}"
             notifies :restart, 'service[splunk]'
@@ -59,7 +59,7 @@ class Chef
 
       action :disable do
         if app_enabled? # ~FC023
-          splunk_service
+          # splunk_service
           execute "splunk-disable-#{new_resource.app_name}" do
             command "#{splunk_cmd} disable app #{new_resource.app_name} -auth #{splunk_auth(new_resource.splunk_auth)}"
             not_if { ::File.exist?("#{splunk_dir}/etc/disabled-apps/#{new_resource.app_name}") }

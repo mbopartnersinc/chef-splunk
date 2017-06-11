@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the splunk cookbook.
 
+2.0.2
+-----
+nmcginnis - Removed excessive restarts after apps are deployed.
+
 2.0.1
 -----
 nmcginnis - Updated gems to work with latest Chef DK version.  Added conditional around node search in client recipe and thus removed requirement for including node search stub in role cookbooks.
